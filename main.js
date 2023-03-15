@@ -29,8 +29,7 @@ const cargaPacientes = (e) => {
   //Cancelamos el comportamiento del evento
   e.preventDefault();
   //Obtenemos el elemento desde el cual se disparó el evento
-  let formulario = e.target
-  let consultorio = [];
+  let formulario = e.target;
   //Completo Paciente
   let DNI = formulario.children[0].value;
   let NOMBRE = formulario.children[1].value;
