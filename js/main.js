@@ -1,15 +1,17 @@
 // creo e inicializo variables que voy a usar
 let consultorio = [];
+//cargo fecha actual
 const fechaActual = new Date();
-let id = 1; // inicializo Id
+// inicializo Id
+let id = 1;
 //--------------------------------------OBJETO PACIENTE-----------------------------------------
 class Paciente {
     constructor (info) {
         // AUMENTO ID POR CADA PACIENTE
         this.id = id++;
         this.dni = parseInt(info.dni);
-        this.nombre = info.nombre;
-        this.apellido = info.apellido;
+        this.nombre = info.nombre.toUpperCase ();
+        this.apellido = info.apellido.toUpperCase ();
         this.nacimiento = info.nacimiento;
         // fecha de nacimiento en formato toLocaleDateString()
         const edad = new Date(Date.parse(info.nacimiento));
@@ -45,8 +47,16 @@ const cargaPacientes = (e) => {
     email: EMAIL,
     telefono: TELEFONO,
   }))
+  consultorio.forEach(item => {
+       guardarLS(item.id, JSON.stringify(item))
+  });
   alert ("AGREGADO");
 }
+
+//--------------------------------------FUNCIONES---------------------------------------------------------
+const guardarLS = (clave, valor) => {
+  localStorage.setItem(clave, valor);
+};
 
 function busqPorId(){
   let idConsulta = Number (prompt ("Ingrese ID del Paciente"));
