@@ -1,9 +1,11 @@
+// Crear el formulario principal
+let form = document.createElement("form");
 // creo e inicializo variables que voy a usar
-let consultorio = [];
-//cargo fecha actual
+const consultorio = [];
 const fechaActual = new Date();
 // inicializo Id
 let id = 1;
+
 //--------------------------------------OBJETO PACIENTE-----------------------------------------
 class Paciente {
     constructor (info) {
@@ -46,18 +48,22 @@ const cargaPacientes = (e) => {
     nacimiento:NACIMIENTO,
     email: EMAIL,
     telefono: TELEFONO,
-  }))
-  consultorio.forEach(item => {
-       guardarLS(item.id, JSON.stringify(item))
-  });
+  }));
+  guardar();
   alert ("AGREGADO");
+  limpiarForm ();
 }
-
 //--------------------------------------FUNCIONES---------------------------------------------------------
-const guardarLS = (clave, valor) => {
-  localStorage.setItem(clave, valor);
-};
-
+//limpio los inputs luego de agregar un Paciente, me parece mas prolijo
+function limpiarForm (){
+  inputDni.value = '';
+  inputNombre.value = '';
+  inputApellido.value = '';
+  inputNacimiento.value = '';
+  inputEmail.value = '';
+  inputTel.value = '';
+}
+//buscvo 1 paciente por ID
 function busqPorId(){
   let idConsulta = Number (prompt ("Ingrese ID del Paciente"));
   const person = consultorio.find(p => p.id === idConsulta);
@@ -69,10 +75,29 @@ function busqPorId(){
   }               
 }
 
-//-----------------------------------Creo Formulario e Inputs con sus propiedades-----------------------------
-// Crear el formulario principal
-let form = document.createElement("form");
+function guardar() {
+  // Convierto el arreglo a JSON y la guardo en el LocalStorage con la clave "clinica"
+  localStorage.setItem("clinica", JSON.stringify(consultorio));
+}
 
+function mostrar(){
+    // Obtener los datos almacenados en localStorage
+    const consultorioLS = JSON.parse(localStorage.getItem('clinica'));
+    // Verificar si hay datos almacenados
+    if (consultorioLS && consultorioLS.length > 0) {
+      // Mostrar los datos en la página
+      const lista = document.createElement('ol');
+      consultorioLS.forEach(consultorioLS => {
+        const item = document.createElement('li');
+        item.textContent = JSON.stringify(consultorioLS.nombre +" "+ consultorioLS.apellido +" de "+ consultorioLS.edad + " años").replace(/\"/g, "");
+        lista.appendChild(item);
+      });
+      document.body.appendChild(lista);
+    } else {
+      console.log('No hay Pacientes almacenados');
+    }
+  }
+//-----------------------------------Creo Inputs con sus propiedades-----------------------------
 // Crear el input de dni
 let inputDni = document.createElement("input");
 inputDni.type = "number";
@@ -108,17 +133,24 @@ let inputNacimiento = document.createElement("input");
 inputNacimiento.type = "date";
 inputNacimiento.name = "nacimiento";
 
+//****************************************BOTONES********************************************************
 //Creo boton Agregar
 const botonAgregar = document.createElement('button');
 botonAgregar.type = "submit";
 botonAgregar.textContent = 'Agregar';
 
-//Creo boton Funcion
+//Creo boton Consultar 
 const botonConsultar = document.createElement('button');
 botonConsultar.type = 'button';
 botonConsultar.textContent = 'Consultar';
 
-// Agregar los inputs al formulario
+//Creo boton Mostrar todo
+const botonMostrar = document.createElement('button');
+botonMostrar.type = 'button';
+botonMostrar.textContent = 'Mostrar';
+
+//****************************************FIN BOTONES**************************************
+// cierro los inputs del formulario
 form.appendChild(inputDni);
 form.appendChild(inputNombre);
 form.appendChild(inputApellido);
@@ -127,10 +159,11 @@ form.appendChild(inputEmail);
 form.appendChild(inputTel);
 form.appendChild(botonAgregar);
 form.appendChild(botonConsultar);
+form.appendChild(botonMostrar);
 
-// Agregar el formulario al documento
+//************************Cierro el formulario******************************
 document.body.appendChild(form);
-
-//***************************************************************************************** 
+//*******************************EVENTOS************************************
 form.addEventListener("submit", cargaPacientes);
 botonConsultar.addEventListener("click", () => busqPorId());
+botonMostrar.addEventListener("click", () => mostrar());
